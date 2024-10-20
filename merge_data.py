@@ -9,10 +9,14 @@ BINS_COUNT = 10
 # %%
 
 %%timeit
-
-pl.scan_parquet("data/*.parquet").with_columns(
-  pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins')
-).collect()
+(
+    pl.scan_parquet("data/*.parquet")
+    .groupby("date")
+    .agg([
+        pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins')
+    ])
+    .collect()
+)
 
 
 # %%
