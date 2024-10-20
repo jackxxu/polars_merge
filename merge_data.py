@@ -37,6 +37,8 @@ with ThreadPoolExecutor() as executor:
     # Execute the processing function for each file concurrently
     lazy_frames = list(executor.map(process_file, parquet_files))
 
+# lazy_frames = [process_file(file) for file in parquet_files]
+
 pl.concat(
     lazy_frames,
     rechunk=True  # Rechunking for better memory usage
