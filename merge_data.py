@@ -8,6 +8,8 @@ BINS_COUNT = 10
 
 # %%
 
+%%timeit
+
 pl.scan_parquet("data/*.parquet").with_columns(
   pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins')
 ).collect()
@@ -28,14 +30,12 @@ def process_file(file_path):
         )
     )
 
+# %%
+%%timeit
+
 with ThreadPoolExecutor() as executor:
     # Execute the processing function for each file concurrently
     lazy_frames = list(executor.map(process_file, parquet_files))
-
-
-# %%
-
-%%timeit
 
 pl.concat(
     lazy_frames,

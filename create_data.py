@@ -6,15 +6,23 @@
 
 import polars as pl
 import numpy as np
+from datetime import datetime, timedelta
 
-ROWS_COUNT = 10000
+ROWS_COUNT = 50000
+NUM_DAYS = 500
 
-for i in range(1, 11):
-    date = f"2024-10-{i:02}"
+start_date = datetime(2024, 10, 1)
+
+for i in range(NUM_DAYS):
+    # Calculate the current date
+    date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+
+    # Create the DataFrame for the current date
     df = pl.DataFrame({
         "a": np.random.rand(ROWS_COUNT),
         "cat": pl.Series(["a", "b", "c", "d", "e"]).sample(ROWS_COUNT, with_replacement=True),
         "date": [date] * ROWS_COUNT,
     })
-    df.write_parquet(f"data/{date}.parquet", compression="zstd", compression_level=22)
 
+    # Write the DataFrame to a Parquet file with high compression
+    df.write_parquet(f"data/{date}.parquet", compression="zstd", compression_level=22)
