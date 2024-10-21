@@ -9,7 +9,7 @@ BINS_COUNT2 = 5
 
 # %%
 
-# %%timeit
+%%timeit
 (
     pl.scan_parquet("data/*.parquet")
     .with_columns([
