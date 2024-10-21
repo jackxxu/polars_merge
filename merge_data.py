@@ -12,6 +12,7 @@ BINS_COUNT2 = 5
 %%timeit
 (
     pl.scan_parquet("data/*.parquet")
+    .join(pl.scan_parquet("data/*.parquet"), on=['date', 'id'], how='inner')
     .with_columns([
         pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).over('date').alias('bins'),
         pl.col('a').qcut(BINS_COUNT2, labels=[str(i) for i in range(BINS_COUNT2)]).cast(pl.Int8).over('date').alias('bins2'),
@@ -30,6 +31,7 @@ def process_file(file_path):
     # print(f"Processing file: {file_path}")
     return (
         pl.scan_parquet(file_path)  # Lazily read the Parquet file
+        .join(pl.scan_parquet(file_path), on=['id'], how='inner')
         .with_columns(
             pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins'),
             pl.col('a').qcut(BINS_COUNT2, labels=[str(i) for i in range(BINS_COUNT2)]).cast(pl.Int8).alias('bins_2')
