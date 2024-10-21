@@ -5,15 +5,16 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 BINS_COUNT = 10
+BINS_COUNT2 = 5
 
 # %%
 
-%%timeit
+# %%timeit
 (
     pl.scan_parquet("data/*.parquet")
-    .groupby("date")
-    .agg([
-        pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins')
+    .with_columns([
+        pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).over('date').alias('bins'),
+        pl.col('a').qcut(BINS_COUNT2, labels=[str(i) for i in range(BINS_COUNT2)]).cast(pl.Int8).over('date').alias('bins2'),
     ])
     .collect()
 )
@@ -30,7 +31,8 @@ def process_file(file_path):
     return (
         pl.scan_parquet(file_path)  # Lazily read the Parquet file
         .with_columns(
-            pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins')
+            pl.col('a').qcut(BINS_COUNT, labels=[str(i) for i in range(BINS_COUNT)]).cast(pl.Int8).alias('bins'),
+            pl.col('a').qcut(BINS_COUNT2, labels=[str(i) for i in range(BINS_COUNT2)]).cast(pl.Int8).alias('bins_2')
         )
     )
 

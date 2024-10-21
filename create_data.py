@@ -19,6 +19,7 @@ for i in range(NUM_DAYS):
 
     # Create the DataFrame for the current date
     df = pl.DataFrame({
+        "id": range(ROWS_COUNT),
         "a": np.random.rand(ROWS_COUNT),
         "cat": pl.Series(["a", "b", "c", "d", "e"]).sample(ROWS_COUNT, with_replacement=True),
         "date": [date] * ROWS_COUNT,
