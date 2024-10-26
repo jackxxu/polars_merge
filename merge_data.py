@@ -51,3 +51,15 @@ pl.concat(
     lazy_frames,
     rechunk=True  # Rechunking for better memory usage
 ).collect()  # Collect to finalize the lazy execution
+
+# %%
+%%timeit
+
+with ThreadPoolExecutor() as executor:
+    # Execute the processing function for each file concurrently
+    lazy_frames = list(executor.map(process_file, ['data/2025-01-22.parquet'] * len(parquet_files)))
+
+pl.concat(
+    lazy_frames,
+    rechunk=True  # Rechunking for better memory usage
+).collect()  # Collect to finalize the lazy execution
