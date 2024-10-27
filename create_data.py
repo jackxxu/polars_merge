@@ -27,3 +27,18 @@ for i in range(NUM_DAYS):
 
     # Write the DataFrame to a Parquet file with high compression
     df.write_parquet(f"data/{date}.parquet", compression="zstd", compression_level=22)
+
+for i in range(NUM_DAYS):
+    # Calculate the current date
+    date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+
+    # Create the DataFrame for the current date
+    df = pl.DataFrame({
+        "id": range(ROWS_COUNT),
+        "a": np.random.rand(ROWS_COUNT),
+        "cat": pl.Series(["a", "b", "c", "d", "e"]).sample(ROWS_COUNT, with_replacement=True),
+        "date": [date] * ROWS_COUNT,
+    })
+
+    # Write the DataFrame to a Parquet file with high compression
+    df.write_parquet(f"data2/{date}.parquet", compression="zstd", compression_level=22)
