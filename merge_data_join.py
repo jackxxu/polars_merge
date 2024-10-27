@@ -33,13 +33,15 @@ def stitch_files(file_paths: List[List]):
         rechunk=True  # Rechunking for better memory usage
     )
 
+
 non_repeated_paths = list(zip(
     Path("data").glob("*.parquet"),
     Path("data2").glob("*.parquet")))
 
+
 repeated_paths = list(zip(
     Path("data").glob("*.parquet"),
-    ['data/2025-01-22.parquet'] * len(list(Path("data").glob("*.parquet")))))
+    ['data2/2025-01-22.parquet'] * len(list(Path("data").glob("*.parquet"))))) # 1 file repeated
 
 # %%
 
@@ -57,6 +59,5 @@ print(stitch_files(non_repeated_paths).explain())
 stitch_files(repeated_paths).collect()
 
 #%%
-
 
 print(stitch_files(repeated_paths).explain())
